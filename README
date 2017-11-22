@@ -1,0 +1,90 @@
+Installation
+============
+
+# Install npm
+https://nodejs.org/en/download/
+
+# Create virtualenv and activate it
+virtualenv -p /usr/bin/python2.7 /opt/newsbot/env
+source /opt/newsbot/env/activate
+
+# Install dependencies
+make install
+
+# Run tests
+python tests.py
+
+
+Run webserver locally
+=====================
+
+python server.py
+
+
+uWSGI setup (this step is only for production)
+==============================================
+
+1. Add evironment variables to your /etc/uwsgi/apps-enabled/newsbot.ini
+socket = <path to newsbot.sock>
+chdir = /opt/newsbot
+lazy-apps = true
+
+venv = /opt/newsbot/venv
+module = server:application
+
+Secrets can be generated using the following python command:
+python -c 'import os; import binascii; print(binascii.hexlify(os.urandom(24)))'
+
+
+Nginx setup (production)
+========================
+
+Keep in mind, it is crucial to add gzip compression, it has no CPU cost, whereas
+it can reduce static delivery size from 1Mb to about 300Kb, dramatically
+speed-up the application loading and improve user experience.
+
+server {
+    listen 80;
+    server_name localhost;
+    client_max_body_size 5M;
+    gzip on;
+
+    gzip_types text/plain text/html text/css application/json application/javascript;
+
+    location / {
+        include uwsgi_params;
+        uwsgi_pass unix:/tmp/mysite.sock;
+    }
+
+    location /static {
+        alias /opt/newsbot/static;
+    }
+}
+
+
+Create webassets folder (production)
+====================================
+
+Webassets stores its cache in static/.webassets-cache by default, in order to
+make this folder accessible to write/read operations by uWSGI
+
+mkdir static/.webassets-cache
+chown <user>:<user> static/.webassets-cache
+chmod u+rwx static/.webassets-cache
+
+Additionally create folder for compressed static
+mkdir static/public
+chown <user>:<user> static/public
+chmod u+rwx static/public
+
+
+Run the bots
+============
+
+python telegram-bot <account_id>
+
+<account_id> is ObjectId of account from MongoDB.
+
+You need to start a process for each bot. this is a temporary solution
+
+This has changed a lot!

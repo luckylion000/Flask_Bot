@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block page_header %}
+    <ol class="list-inline" id="navigation">
+        <li><a href="{{ url_for('index.bulletins_list') }}" class="text-primary active">Bulletins</a></li>
+    </ol>
+    <h1 style="color: black;">
+        Bulletins
+        <div class="btn-group right-position">
+            <form action="{{ url_for('index.bulletins_add') }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-success">
+                    Add bulletin
+                </button>
+            </form>
+        </div>
+    </h1>
+{% endblock %}
+
+{% block content %}
+    {% with record_name = 'bulletin' %}
+        {%  include "includes/confirm-delete-modal.html" %}
+    {%  endwith %}
+
+        <div class="row">
+            <div class="ibox ibox-content">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Title</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for b in bulletins %}
+                            <tr>
+                                <td>{{ b.publish_at.strftime("%Y-%m-%d %H:%M") }}</td>
+                                <td>{{ b.title }}</td>
+                                <td><span class="label bulletin_status bulletin_status_{{ b.status }}">{{ b.status }}</td>
+                                <td>
+                                    <button class="btn btn-link text-info action-btn">
+                                            <a href="{{ url_for('index.bulletins_edit', bid=b.id) }}">
+                                            Edit
+                                           </a>
+                                    </button>
+                                    <button class="btn btn-link text-danger action-btn"
+                                            data-href="{{ url_for('index.bulletins_delete', bid=b.id) }}"
+                                            data-toggle="modal"
+                                            data-target="#confirm-delete">Delete</button>
+
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+{% endblock %}

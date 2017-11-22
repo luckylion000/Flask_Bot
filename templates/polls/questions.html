@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Bulletin.chat{% endblock %}
+
+{% block page_header %}
+
+<style>
+#chartdiv {
+  width: 100%;
+  height: 500px;
+}
+</style>
+
+<script>
+
+var data = {{ data|tojson }};
+
+$(document).ready(function() {
+
+  var chart = AmCharts.makeChart("chartdiv", {
+
+    "type": "pie",
+    "theme": "light",
+    // data without total stats
+    "dataProvider": data.slice(0, data.length-1),
+    "valueField": "votes",
+    "titleField": "answer",
+    "balloon":{
+      "fixedPosition":true
+    },
+    "export": {
+      "enabled": true,
+      "libs": { "autoLoad": false }
+    },
+  });
+
+  $('#poll_answers').DataTable({
+    dom: 't',
+    data: data,
+    columns: [
+      { data: 'answer' },
+      { data: 'votes' },
+      { data: 'persent' },
+    ]
+  });
+
+});
+
+</script>
+
+	<div class="col-sm-12">
+		<ol class="list-inline" id="navigation">
+			<li><a href="#" class="text-primary">Analytics</a></li>
+			<li><a href="{{ url_for('index.polls') }}" class="text-primary">List of Polls</a></li>
+      <li><a href="{{ url_for('index.view_poll', poll_id=fragment.id) }}" class="text-primary active">{{ fragment.text }}</a></li>
+		</ol>
+		<h1 style="color: black;">{{ fragment.text }}</h1>
+	</div>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="row col-sm-12">
+  <div class="ibox ibox-content">
+    <div id="chartdiv"></div>
+  </div>
+</div>
+
+<div class="row col-sm-12">
+  <div class="ibox ibox-content">
+    <table class="table table-striped" id="poll_answers">
+        <thead>
+            <tr>
+                <th>Option</th>
+                <th>Votes</th>
+                <th>%</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for i in data %}
+            <tr>
+                <td>{{ i.answer }}</td>
+                <td>{{ i.votes }}</td>
+                <td>{{ i.persent }}%</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

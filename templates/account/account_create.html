@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}New account{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-4">
+            <form class="profile-form" method="POST" action="{{ url_for('auth.account_create') }}">
+                {{ form.csrf_token }}
+
+                <h4>New account</h4>
+                <hr>
+                {{ render_fields_group(obj=form.name, placeholder=form.name.label.text) }}
+                {{ render_fields_group(obj=form.audience) }}
+                {{ render_fields_group(obj=form.timezone) }}
+
+                <button type="submit" class="btn btn-primary">Create New Account</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

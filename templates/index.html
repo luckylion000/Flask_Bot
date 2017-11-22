@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BulletinChat</title>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet"> 
+  
+  {% assets 'css_landing' %}
+      <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">
+  {% endassets %}
+
+  {% assets 'js_landing' %}
+      <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+  {% endassets %}
+  <script>
+      document.addEventListener("DOMContentLoaded", function(){
+          var typed = new Typed('.typed', {
+            strings: [
+              'the subway <img class="emojione" alt="🚋" src="//cdn.jsdelivr.net/emojione/assets/png/1f68b.png?v=2.2.6"/>.',
+              'the bus <img class="emojione" alt="🚌" src="//cdn.jsdelivr.net/emojione/assets/png/1f68c.png?v=2.2.6"/>.',
+              'the elevator <img class="emojione" alt="🕴" src="//cdn.jsdelivr.net/emojione/assets/png/1f574.png?v=2.2.6"/>.',
+              'coffee shop <img class="emojione" alt="☕" src="//cdn.jsdelivr.net/emojione/assets/png/2615.png?v=2.2.6"/>.',
+              'the grocery store line <img class="emojione" alt="🛍" src="//cdn.jsdelivr.net/emojione/assets/png/1f6cd.png?v=2.2.6"/>.'
+            ],
+            typeSpeed: 45,
+            backDelay: 1000,
+            loop: true
+          });
+      });
+  </script>
+</head>
+<body>
+  <div id="wrapper">
+    <header id="header">
+      <div class="container">
+        <div class="logo">
+          <a href="#">
+            <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="bulletin.chat"><span>Bulletin.chat</span>
+          </a>
+        </div>
+        <nav id="nav">
+          <a href="#" class="nav-opener"><span></span></a>
+          <div class="nav-drop">
+            <a href="#" class="nav-opener"><span></span></a>
+            <ul>
+              <li><a href="#features">Features</a></li>
+              <li><a href="mailto:info@bulletin.chat">Contact</a></li>
+              <li><a href="{{ url_for('auth.login') }}">Sign In <i class="icon-arrow"></i></a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <div class="visual">
+        <div class="container">
+          <div class="text-holder">
+            <h1>Conversational CMS<br> for Telegram <i class="icon-plane"></i><br> &amp; Facebook <i class="icon-messenger"></i></h1>
+            <a href="#" class="btn">Request early access</a>
+          </div>
+          <div class="phone-holder">
+            <div class="andriod-frame">
+              <div class="andriod-t">
+                <span class="speaker"></span>
+                <span class="sensor"></span>
+              </div>
+              <picture>
+                <source srcset="{{ url_for('static', filename='images/img02-md.jpg') }}, {{ url_for('static', filename='images/img02-md@2x.jpg') }} 2x" media="(max-width: 991px)">
+                <source srcset="{{ url_for('static', filename='images/img02.jpg') }}, {{ url_for('static', filename='images/img02@2x.jpg') }} 2x">
+                <img src="img02.jpg" alt="img-description">
+              </picture>
+            </div>
+            <div class="iphone-frame">
+              <div class="iphone-t">
+                <span class="sensor"></span>
+                <span class="speaker"></span>
+              </div>
+              <video autoplay="" loop="" poster="{{ url_for('static', filename='media/HOMESCREEN.PNG') }}">
+                <source type="video/mov" src="{{ url_for('static', filename='media/BulletinChatHome.mov') }}">
+                <source type="video/mp4" src="{{ url_for('static', filename='media/BulletinChatHome.mp4') }}">
+              </video>
+              <div class="iphone-b">
+                <span class="home-btn"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="news-block">
+        <div class="container">
+          <div class="img-holder">
+            <picture>
+              <source srcset="{{ url_for('static', filename='images/img01-xs.png') }}, {{ url_for('static', filename='images/img01-xs@2x.png') }} 2x" media="(max-width: 767px)">
+              <source srcset="{{ url_for('static', filename='images/img01-sm.png') }}, {{ url_for('static', filename='images/img01-sm@2x.png') }} 2x" media="(max-width: 991px)">
+              <source srcset="{{ url_for('static', filename='images/img01-md.png') }}, {{ url_for('static', filename='images/img01-md@2x.png') }} 2x" media="(max-width: 1199px)">
+              <source srcset="{{ url_for('static', filename='images/img01.png') }}, {{ url_for('static', filename='images/img01@2x.png') }} 2x">
+              <img src="img01.png" alt="img-description">
+            </picture>
+          </div>
+          <div class="text-holder">
+            <h2>Create ongoing conversations about the news</h2>
+            <p>Send your audience messages, photos, videos, audio, GIFs and links, and they can tap to respond when they’re interested in learning more about a topic.</p>
+            <p>Each session lasts just a few minutes,<br/> so it’s perfect for <span class="typed" style="display:inline-block;"></span></p>
+            <p>or wherever they have a spare moment to catch up on the <span>news<span class="icon-holder">
+                  <picture>
+                    <source srcset="{{ url_for('static', filename='images/icon05-sm.jpg') }}, {{ url_for('static', filename='images/icon05-sm@2x.jpg') }} 2x" media="(max-width: 767px)">
+                    <source srcset="{{ url_for('static', filename='images/icon05-md.jpg') }}, {{ url_for('static', filename='images/icon05-md@2x.jpg') }} 2x" media="(max-width: 991px)">
+                    <source srcset="{{ url_for('static', filename='images/icon05.jpg') }}, {{ url_for('static', filename='images/icon05@2x.jpg') }} 2x">
+                    <img src="icon05.jpg" alt="img-description">
+                  </picture>
+                </span></span>
+            </p>
+          </div>
+        </div>
+      </div>
+        <a name="features"></a>
+      <div class="bots-block">
+        <div class="container">
+          <div class="title-holder">
+            <h2>A backend for Telegram and Facebook Messenger Bots</h2>
+            <strong>Powerful and easy to use content management system for messaging.</strong>
+          </div>
+          <div class="bots-columns">
+            <div class="column">
+              <div class="ico-holder">
+                <picture>
+                  <source srcset="{{ url_for('static', filename='images/icon01-md.jpg') }}, {{ url_for('static', filename='images/icon01-md@2x.jpg') }} 2x" media="(max-width: 991px)">
+                  <source srcset="{{ url_for('static', filename='images/icon01.jpg') }}, {{ url_for('static', filename='images/icon01@2x.jpg') }} 2x">
+                  <img src="icon01.jpg" alt="img-description">
+                </picture>
+              </div>
+              <div class="text-holder">
+                <h3>No Coding Required</h3>
+                <p>Focus on content.</p>
+              </div>
+            </div>
+            <div class="column">
+              <div class="ico-holder">
+                <picture>
+                  <source srcset="{{ url_for('static', filename='images/icon02-md.jpg') }}, {{ url_for('static', filename='images/icon02-md@2x.jpg') }} 2x" media="(max-width: 991px)">
+                  <source srcset="{{ url_for('static', filename='images/icon02.jpg') }}, {{ url_for('static', filename='images/icon02@2x.jpg') }} 2x">
+                  <img src="icon02.jpg" alt="img-description">
+                </picture>
+              </div>
+              <div class="text-holder">
+                <h3>Auto Scaling</h3>
+                <p>From tens of readers to millions of readers without a worry.</p>
+              </div>
+            </div>
+            <div class="column">
+              <div class="ico-holder">
+                <picture>
+                  <source srcset="{{ url_for('static', filename='images/icon03-md.jpg') }}, {{ url_for('static', filename='images/icon03-md@2x.jpg') }} 2x" media="(max-width: 991px)">
+                  <source srcset="{{ url_for('static', filename='images/icon03.jpg') }}, {{ url_for('static', filename='images/icon03@2x.jpg') }} 2x">
+                  <img src="icon03.jpg" alt="img-description">
+                </picture>
+              </div>
+              <div class="text-holder">
+                <h3>Multiple Content </h3>
+                <p>Text, photos, videos, audios, GIFs and files.</p>
+              </div>
+            </div>
+            <div class="column">
+              <div class="ico-holder">
+                <picture>
+                  <source srcset="{{ url_for('static', filename='images/icon04-md.jpg') }}, {{ url_for('static', filename='images/icon04-md@2x.jpg') }} 2x" media="(max-width: 991px)">
+                  <source srcset="{{ url_for('static', filename='images/icon04.jpg') }}, {{ url_for('static', filename='images/icon04@2x.jpg') }} 2x">
+                  <img src="icon04.jpg" alt="img-description">
+                </picture>
+              </div>
+              <div class="text-holder">
+                <h3>Teams Supported</h3>
+                <p>Employ your same team of editors.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="personalise-block">
+        <div class="container">
+          <div class="title-holder">
+            <h2>Personalized interactions with your readers</h2>
+            <ul>
+              <li>Polls</li>
+              <li>Profiling questions</li>
+              <li>User segmentation</li>
+            </ul>
+          </div>
+          <div class="img-wrap">
+            <div class="iphone-frame">
+              <picture>
+                <source srcset="{{ url_for('static', filename='images/img04-xs.png') }}, {{ url_for('static', filename='images/img04-xs@2x.png') }} 2x" media="(max-width: 767px)">
+                <source srcset="{{ url_for('static', filename='images/img04-sm.png') }}, {{ url_for('static', filename='images/img04-sm@2x.png') }} 2x" media="(max-width: 991px)">
+                <source srcset="{{ url_for('static', filename='images/img04-md.png') }}, {{ url_for('static', filename='images/img04-md@2x.png') }} 2x" media="(max-width: 1199px)">
+                <source srcset="{{ url_for('static', filename='images/img04.png') }}, {{ url_for('static', filename='images/img04@2x.png') }} 2x">
+                <img src="img04.png" alt="img-description">
+              </picture>
+            </div>
+            <div class="img-holder">
+              <picture>
+                <source srcset="{{ url_for('static', filename='images/img03-xs.png') }}, {{ url_for('static', filename='images/img03-xs@2x.png') }} 2x" media="(max-width: 767px)">
+                <source srcset="{{ url_for('static', filename='images/img03-sm.png') }}, {{ url_for('static', filename='images/img03-sm@2x.png') }} 2x" media="(max-width: 991px)">
+                <source srcset="{{ url_for('static', filename='images/img03-md.png') }}, {{ url_for('static', filename='images/img03-md@2x.png') }} 2x" media="(max-width: 1199px)">
+                <source srcset="{{ url_for('static', filename='images/img03.png') }}, {{ url_for('static', filename='images/img03@2x.png') }} 2x">
+                <img src="img03.png" alt="img-description">
+              </picture>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="publish-block">
+        <div class="container">
+          <div class="text-holder">
+            <h2>Publishing is changing</h2>
+            <p>Your audience communicates with messaging every day.</p>
+            <p>Messaging brings a huge new opportunity for publishers to distribute content and engage with users.</p>
+            <a href="#" class="btn">Request early access</a>
+          </div>
+          <div class="img-holder">
+            <picture>
+              <source srcset="{{ url_for('static', filename='images/graph-xs.png') }}, {{ url_for('static', filename='images/graph-xs@2x.png') }} 2x" media="(max-width: 767px)">
+              <source srcset="{{ url_for('static', filename='images/graph-sm.png') }}, {{ url_for('static', filename='images/graph-sm@2x.png') }} 2x" media="(max-width: 991px)">
+              <source srcset="{{ url_for('static', filename='images/graph-md.png') }}, {{ url_for('static', filename='images/graph-md@2x.png') }} 2x" media="(max-width: 1199px)">
+              <source srcset="{{ url_for('static', filename='images/graph.png') }}, {{ url_for('static', filename='images/graph@2x.png') }} 2x">
+              <img src="graph.png" alt="img-description">
+            </picture>
+          </div>
+        </div>
+      </div>
+      <div class="analyze-block">
+        <div class="container">
+          <div class="title-holder">
+            <h2>Understand your active users and which content read like most</h2>
+            <strong>Real time analytics for messaging.</strong>
+          </div>
+          <div class="img-holder">
+            <picture>
+              <source srcset="{{ url_for('static', filename='images/img06-xs.png') }}, {{ url_for('static', filename='images/img06-xs@2x.png') }} 2x" media="(max-width: 767px)">
+              <source srcset="{{ url_for('static', filename='images/img06-sm.png') }}, {{ url_for('static', filename='images/img06-sm@2x.png') }} 2x" media="(max-width: 991px)">
+              <source srcset="{{ url_for('static', filename='images/img06-md.png') }}, {{ url_for('static', filename='images/img06-md@2x.png') }} 2x" media="(max-width: 1199px)">
+              <source srcset="{{ url_for('static', filename='images/img06.png') }}, {{ url_for('static', filename='images/img06@2x.png') }} 2x">
+              <img src="img06.png" alt="img-description">
+            </picture>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer id="footer">
+      <div class="container">
+        <div class="bulletin-wrap">
+          <div class="title-holder">
+            <a href="#" class="title">bulletin</a> <span>|ˈb<span class="curve-holder">oo<span class="curve"></span></span>lətnˈ  b<span class="curve-holder">oo<span class="curve"></span></span>lədən| </span>
+          </div>
+          <ul>
+            <li>a short official statement or broadcast summary of news.</li>
+            <li>a regular newsletter or printed report issued by an organization or society.</li>
+          </ul>
+        </div>
+        <div class="chat-wrap">
+          <strong class="title">Stay in the know about <a href="">bulletin.chat</a></strong>
+          <div class="social-networks">
+            <span class="sub-title">Subscribe to our bots:</span>
+            <ul>
+              <li><a href="#" class="btn btn-lightblue"><i class="icon-plane"></i>Telegram</a></li>
+              <li><a href="#" class="btn btn-blue"><i class="icon-messenger"></i>Facebook Messenger</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

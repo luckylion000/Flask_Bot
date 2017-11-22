@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block page_header %}
+    <h2>Preview for {{bulletin.title}}</h2>
+    <script type="text/javascript">
+        var is_schedule = {{ 'true' if bulletin.schedule else 'false' }};
+        var publish_at = "{{bulletin.publish_at}}";
+
+        var publishBulletinUrl = "{{ url_for('index.bulletins_publish', bid=bulletin.id) }}";
+        var unpublishBulletinUrl = "{{ url_for('index.bulletins_unpublish', bid=bulletin.id) }}";
+
+        $(document).ready(function() {
+            // remove action buttons
+            $('div.bubble-actions-container, div.bubble-internal-actions-container').remove();
+            // init emoji-images
+            $('.bubble .emoji-container').each(function(idx) {
+                var t = emojione.shortnameToImage($(this).html());
+                $(this).html(t);
+            });
+            // setup modal text on publish event
+            $('#confirm-publish').on('show.bs.modal', function() {
+                publishModalText(is_schedule, publish_at);
+            });
+            // register publish event btn
+            $('#publish').on('click', function(e) {
+                $("#publish_form").attr("action", publishBulletinUrl).submit();
+            });
+            // register unpublish btn
+            $('#unpublish').on('click', function(e) {
+                $("#publish_form").attr("action", unpublishBulletinUrl).submit();
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    {%  include "includes/confirm-publish-modal.html" %}
+
+    {% for s in bulletin.content_ordered %}
+        <div class="row margin-top-10 margin-bottom-10">
+            <h3>{{ s.title }} (<a href="{{ url_for('index.stories_edit', sid=s.id) }}">edit</a>)</h3>
+            <div class="bubble bubble-left">
+                <div class="bubble-body">
+                    <span class="emoji-container">{{ s.lead }}</span>
+                    <span class="original-text-container hidden">{{ s.lead }}</span>
+                </div>
+            </div>
+
+            {% for f in s.content_ordered_grouped %}
+                {% if f is list %}
+                    {% include 'includes/story-bubble-answer.html' %}
+                {% else %}
+                    {% include 'includes/story-bubble.html' %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endfor %}
+    <div class="row">
+        <div class="col-sm-6">
+            <a class="btn btn-lg btn-primary btn-block" href="{{ url_for('index.bulletins_edit', bid=bulletin.id) }}">Edit Draft</a>
+        </div>
+        <div class="col-sm-6">
+            {% if not bulletin.is_published %}
+                <button class="btn btn-lg btn-primary btn-block"
+                    data-toggle="modal"
+                    data-target="#confirm-publish">Publish</button>
+            {% else %}
+                <button class="btn btn-lg btn-primary btn-block" id="unpublish">Unpublish</button>
+            {% endif %}
+        </div>
+
+        <form method="POST" action="" id="publish_form">
+            {{ form.csrf_token }}
+            {{ form.title(class="hidden") }}
+            {{ form.expire_hours(class="hidden") }}
+            {{ form.publish_at(class="hidden") }}
+        </form>
+    </div>
+{% endblock %}

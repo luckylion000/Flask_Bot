@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block external_js %}
+    {% assets 'js_bulletin_edit' %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+{% endblock %}
+
+{% block js_head_end %}
+    <script type="text/javascript">
+        var orderSaveUrl = "{{ url_for('index.bulletins_order_stories', bid=bulletin.id) }}";
+        var bulletinIsPublished = {{ 'true' if bulletin.is_published else 'false' }};
+
+        var saveBulletinUrl = "{{ action_url }}";
+        var publishBulletinUrl = "{{ url_for('index.bulletins_publish', bid=bulletin.id) }}";
+        var unpublishBulletinUrl = "{{ url_for('index.bulletins_unpublish', bid=bulletin.id) }}";
+
+        $(document).ready(function() {
+            $('#confirm-publish').on('show.bs.modal', function() {
+                var is_immediately = $('#save_form [name="{{form.send_immediately.name}}"]')
+                    .is(':checked');
+                var publish_at = $('#save_form [name="{{form.publish_at.name}}"]').val();
+                if (is_immediately) {
+                    publishModalText(is_immediately, publish_at);
+                } else {
+                    publishModalText(is_immediately, publish_at);
+                    //$('#publish').trigger('click');
+                    //$('#confirm-publish').modal('hide');
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+
+{% block content %}
+    {% with record_name = 'story' %}
+        {%  include 'includes/confirm-delete-modal.html' %}
+    {% endwith %}
+
+    {% with record_name = 'bulletin' %}
+        {%  include "includes/confirm-publish-modal.html" %}
+    {%  endwith %}
+
+    {% include 'includes/backend-error-modal.html' %}
+
+    <form method="POST" action="" id="save_form">
+    {% if bulletin.is_published %}
+        {% set disabled_ = 'disabled' %}
+    {% else %}
+        {% set disabled_ = False %}
+    {% endif %}
+
+    <div class="row">
+        <div class="col-sm-12">
+            <ol class="list-inline" id="navigation">
+                <li><a href="{{ url_for('index.bulletins_list') }}" class="text-primary">Bulletins</a></li>
+                <li><a href="#" class="text-primary active">{{form.title.data}}</a></li>
+            </ol>
+            <h1>{{form.title.data}}</h1>
+            <h2>
+                Stories
+                <!-- Nested form, handle via js -->
+                 <div data-action="{{ url_for('index.stories_add', bid=bulletin.id) }}" class="right-position">
+                    {{ form.csrf_token }}
+                    <input type="button" value="Add story" class="btn btn-success" id="add_story"/>
+                </div>
+            </h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox ibox-content">
+            <table class="table table-striped bulletin-stories-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in bulletin.content_ordered %}
+                        <tr class="story-actions-container"
+                            data-story-order="{{ s.order }}"
+                            data-story-id="{{ s.id }}">
+                            <td>{{ s.title }}</td>
+                            <td>
+                                <button class="btn btn-link text-info action-btn" {{ 'disabled' if bulletin.is_published }}>
+                                    {% if not bulletin.is_published %}
+                                    <a href="{{ url_for('index.stories_edit', sid=s.id) }}">Edit</a>
+                                    {% else %}
+                                    Edit
+                                    {% endif%}
+                                </button>
+                                <input type="button" class="btn btn-link text-danger action-btn" {{ 'disabled' if bulletin.is_published }}
+                                        data-href="{{ url_for('index.stories_delete', sid=s.id) }}"
+                                        data-toggle="modal"
+                                        data-target="#confirm-delete"
+                                        value="Delete"/>
+                                <button class="btn btn-link btn-xs increase-order">
+                                    <span class="glyphicon glyphicon-triangle-top" aria-label="up"></span>
+                                </button>
+                                <button class="btn btn-link btn-xs decrease-order">
+                                    <span class="glyphicon glyphicon-triangle-bottom" aria-label="down"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+    <!-- No content message -->
+    {% if not bulletin.content_ordered %}
+    <div class="row">
+        <div class="col-sm-12 text-center">
+            This bulletin has no stories yet! Create one clicking on "Add Story"!
+        </div>
+    </div>
+    {% endif %}
+    <div class="row" style="height: 50px;"></div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            {{ render_fields_group(obj=form.title, placeholder="Title", autofocus="", required="", disabled=disabled_) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group {{ 'has-error' if form.expire_hours.errors }}">
+                {{ form.expire_hours.label(class="control-label") }}<br>
+                {{ form.expire_hours(class="form-control", disabled=disabled_) }}
+
+                {% if form.expire_hours.errors %}
+                    <div class="help-block">
+                        {% for error in form.expire_hours.errors %}
+                            {{ form.expire_hours.label(class="control-label", text=error) }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="checkbox checkbox-success {{ 'has-error' if form.send_immediately.errors }}">
+                  {{ form.send_immediately(disabled=disabled_) }}
+                  {{ form.send_immediately.label(class="control-label") }}
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="margin-bottom: 20px; margin-top: 20px;">
+        <div class="col-sm-6">
+            <div class="form-inline" style="width: 100%;">
+                {{ form.publish_at.label(class="control-label") }}<br>
+
+                <div class="input-group date col-sm-6" id="datetimepicker1">
+                    {{ form.publish_at(
+                        class="form-control",
+                        required="",
+                        disabled=disabled_,
+                        value=form.publish_at.data|datetimeformat('%m/%d/%Y')
+                    ) }}
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+                <div class="input-group clockpicker col-sm-6"
+                    style="float:right;">
+
+                    <input name="publish_at_time" type="text" class="form-control" value="{{form.publish_at.data|datetimeformat('%H:%M')}}">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-time"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+    <div class="row">
+        {% if not bulletin.is_published %}
+            <div class="col-sm-2">
+                <button class="btn btn-lg btn-success btn-block" id="save_draft">Save Draft</button>
+            </div>
+            <div class="col-sm-2">
+                <button class="btn btn-lg btn-success btn-block"
+                    data-toggle="modal"
+                    data-target="#confirm-publish">Publish</button>
+            </div>
+            <div class="col-sm-2">
+                <a class="btn btn-lg btn-success btn-block" id="preview" href="{{ url_for('index.bulletins_preview', bid=bulletin.id) }}">Preview</a>
+            </div>
+        {% else %}
+            <div class="col-sm-3">
+                <button class="btn btn-lg btn-success btn-block" id="unpublish">Unpublish</button>
+            </div>
+            <div class="col-sm-3">
+                <a class="btn btn-lg btn-success btn-block" id="preview" href="{{ url_for('index.bulletins_preview', bid=bulletin.id) }}">Preview</a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

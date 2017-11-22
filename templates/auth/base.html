@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+
+    {% assets "css_main" %}
+        <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">
+    {% endassets %}
+</head>
+<body class="gray-bg">
+
+    {% from 'auth/_macros.html' import show_success %}
+    {{ show_success() }}
+
+    <div class="container login-container">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

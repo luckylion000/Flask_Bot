@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block page_header %}
+    <script type="text/javascript">
+        var user_growth = {{ account_stats|tojson }};
+        var pathToImages = "{{pathToImages}}";
+
+        $(document).ready(function() {
+            render_user_growth_chart(
+                "user-growth-chart", user_growth,
+                "date", pathToImages
+            );
+
+            // setup datepicker
+            var datepicker_config = {
+                format: "mm/dd/yyyy", sideBySide: true
+            }
+            $('#audience_to, #audience_from').parent().datepicker(datepicker_config);
+        });
+    </script>
+
+    <div class="col-sm-12">
+		<ol class="list-inline" id="navigation">
+			<li><a href="{{ url_for('index.audience') }}" class="text-primary">Audience</a></li>
+            <li><a href="{{ url_for('index.audience_details') }}" class="text-primary active">Detailed growth</a></li>
+		</ol>
+		<h2>Detailed growth</h2>
+	</div>
+
+{% endblock %}
+
+{% block content %}
+    <!-- Date picker -->
+    <div class="row">
+        <form action="{{ url_for('index.audience_details') }}">
+            <div class="col-md-4">
+                <label>Date range</label>
+                <div class="input-daterange input-group">
+                    <input id="audience_from" type="text" class="form-control" name="date_from" value="{{date_from if date_from else ''}}"/>
+                    <span class="input-group-addon">to</span>
+                    <input id="audience_to" type="text" class="form-control" name="date_to" value="{{date_to if date_to else ''}}"/>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <label>&nbsp;</label>
+                <div class="input-group">
+                    <button type="submit" class="btn btn-default">Show</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <br>
+    <br>
+
+    <!-- User growth chart -->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox ibox-content">
+                <div id="user-growth-chart" class="audience-chart"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox ibox-content">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Enabled users</th>
+                            <th>New users</th>
+                            <th>Dropped users</th>
+                            <th>Active users</th>
+                            <th>Messages received</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stats in account_stats %}
+                            <tr>
+                                <td>{{stats.date}}</td>
+                                <td>{{stats.enabled_users}}</td>
+                                <td>{{stats.new_users}}</td>
+                                <td>{{stats.dropped_users}}</td>
+                                <td>{{stats.active_users}}</td>
+                                <td>{{stats.messages_received}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

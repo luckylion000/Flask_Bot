@@ -1,0 +1,25 @@
+{% macro submenu(account_id) %}
+		<ol class="list-inline" id="navigation">
+			<li><a href="{{ url_for('auth.edit_account', aid=account_id) }}" class="text-primary active">Settings</a></li>
+		</ol>
+		<h2>Settings</h2>
+
+	<div class="tabs-container">
+		<ul class="nav nav-tabs">
+			<li {% if request.path == url_for('auth.edit_account', aid=account_id) %} class="active" {% endif %} >
+				<a href="{{ url_for('auth.edit_account', aid=account_id) }}">Account</a>
+			</li>
+			<li {% if request.path == url_for('auth.edit_account_onboarding', aid=account_id) %} class="active" {% endif %}>
+				<a href="{{ url_for('auth.edit_account_onboarding', aid=account_id) }}">Onboarding</a>
+			</li>
+			<li {% if request.path == url_for('auth.edit_account_telegram', aid=account_id) %} class="active" {% endif %}>
+				<a href="{{ url_for('auth.edit_account_telegram', aid=account_id) }}" >Telegram</a>
+			</li>
+			<li {% if request.path == url_for('auth.edit_account_facebook', aid=account_id) %} class="active" {% endif %}>
+				<a href="{{ url_for('auth.edit_account_facebook', aid=account_id) }}">Facebook</a>
+			</li>
+			<li {% if request.path == url_for('auth.edit_account_users', aid=account_id) %} class="active" {% endif %}>
+				<a href="{{ url_for('auth.edit_account_users', aid=account_id) }}">Users</a>
+			</li>
+		</ul>
+{% endmacro %}

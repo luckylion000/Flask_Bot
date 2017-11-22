@@ -1,0 +1,6 @@
+[uwsgi]
+socket = /tmp/newsbot.sock
+venv = /opt/venvs/newsbot
+chdir = /opt/projects/newsbot
+module = server:application
+lazy-apps = true

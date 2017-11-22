@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% from 'auth/_macros.html' import show_success %}
+{% from 'account/_macros.html' import submenu %}
+
+{% block title %}Account - {{ name }}{% endblock %}
+
+{% block content %}
+    <div class="row">
+		<div class="col-sm-6">
+			{{ show_success() }}
+			{{ submenu(account_id) }}
+			<div class="tab-content">
+				<div class="tab-pane active">
+					<div class="panel-body">
+						<table class="table table-striped users-list">
+						<thead>
+						<tr>
+							<th>Name</th>
+							<th>Email</th>
+							<th>Actions</th>
+						</tr>
+						</thead>
+						<tbody>
+						{% for user in users %}
+						<tr class="{{ user.id }}">
+							<td>{{ user.name }}</td>
+							<td>{{ user.email }}</td>
+							<td>{% if(user!=account_owner) %}<a href="{{url_for('auth.remove_user_from_account', aid=account_id,uid=user.id)}}" class="text-danger action-btn">Remove</a>{% endif %}</td>
+						</tr>
+						{% endfor %}
+						</tbody>
+						</table>
+					<hr>
+					<form class="profile-form" method="POST" action="{{ url_for('auth.edit_account_users', aid=account_id) }}">
+						<div class="spacer find-user">
+							<h4>Add new user</h4>
+							<hr>
+							<div class="success-user-search">
+								<p>Do you want to give access to {{user_email}} to your account?</p>
+								<center><a href="{{url_for('auth.account_confirm_access', aid=account_id,uid=user_id)}}" class="btn btn-info" type="submit">Yes</a></center>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+    </div>
+{% endblock %}

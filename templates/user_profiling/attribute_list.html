@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% from 'user_profiling/_macros.html' import submenu %}
+
+{% block js_head_end %}
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('div#confirm-delete .modal-body strong').html('question');
+			$('#attributes_list').DataTable({
+                searching: false, bPaginate: false,
+            });
+		});
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12">
+            <ol class="list-inline" id="navigation">
+                <li><a href="{{ url_for('index.user_profiling_attributes') }}" class="text-primary active">User Profiling</a></li>
+            </ol>
+            <h1 style="color: black;">User Profiling</h1>
+        </div>
+    </div>
+    {% with record_name = 'bulletin' %}
+        {%  include "includes/confirm-delete-modal.html" %}
+    {%  endwith %}
+
+    <div class="row">
+        <div class="col-sm-12">
+            {{ submenu(account_id) }}
+            <div class="tab-content">
+                <div class="tab-pane active">
+                    <div class="panel-body">
+                        <h2>
+                            Attributes
+                            <a href="{{ url_for('index.user_profiling_attribute_add') }}" class="btn btn-success right-position">Add a New attribute</a>
+                        </h2>
+                        <table class="table table-bordered" id="attributes_list">
+                            <thead>
+                                <tr>
+                                    <th>Attribute</th>
+                                    <th>Type</th>
+                                    <th>Chart</th>
+                                    <th>Options</th>
+                                    <th>Options</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>Attribute</th>
+                                    <th>Type</th>
+                                    <th>Chart</th>
+                                    <th>Options</th>
+                                    <th>Options</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                {% for a in chat_user_attributes %}
+                                    <tr>
+                                        <td>{{ a.attribute }}</td>
+                                        <td>{{ a.type }}</td>
+                                        <td>{{ a.chart }}</td>
+                                        <td>
+                                            {% if a.options|length > 0 %}
+                                                [
+                                                {% for o in a.options %} <div class="o-item">
+                                                    {{ o.text }} - {{ o.value }} </div>
+                                                {% endfor %}
+                                                ]
+                                            {% else %}
+                                                [ - ]
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="user_profiling_options">
+                                                <button class="btn btn-link text-info action-btn">
+                                                    <a href="{{ url_for('index.user_profiling_attribute_edit', aid=a.id) }}">Edit</a>
+                                                </button>
+                                                <button class="btn btn-link text-danger action-btn"
+                                                    data-href="{{ url_for('index.user_profiling_attribute_delete', aid=a.id) }}"
+                                                    data-toggle="modal"
+                                                    data-target="#confirm-delete">Delete</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+        </div>
+    </div>
+{% endblock %}

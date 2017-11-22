@@ -1,0 +1,65 @@
+# This is a sample build configuration for all languages.
+# Check our guides at https://confluence.atlassian.com/x/VYk8Lw for more examples.
+# Only use spaces to indent your .yml configuration.
+# -----
+# You can specify a custom docker image from Docker Hub as your build environment.
+image: maubelabs/newsbot:latest
+options:
+  docker: true
+
+pipelines:
+  default:
+    - step:
+        script:
+          - make install
+          - mongod --nojournal --noprealloc --fork --logpath=/var/log/mongod.log
+          - make test
+  branches:
+    devel:
+      - step:
+          script:
+            # test
+            - make install
+            - mongod --nojournal --noprealloc --fork --logpath=/var/log/mongod.log
+            - make test
+
+            # deploy
+            - export TAG="$BITBUCKET_BRANCH"_"$BITBUCKET_COMMIT"
+            - export BASE_IMAGE_URI=145424129263.dkr.ecr.eu-west-1.amazonaws.com/bulletinchat
+            - deploy/build_push.sh
+            - echo $TAG
+            - deploy/update_stack.sh Devel $TAG
+            #- aws cloudformation update-stack --stack-name Devel --use-previous-template --parameters ParameterKey="ContVersion",ParameterValue="$TAG" ParameterKey="VpcId",UsePreviousValue=true ParameterKey="SubnetID",UsePreviousValue=true ParameterKey="KeyName",UsePreviousValue=true --capabilities CAPABILITY_NAMED_IAM --region eu-west-1
+
+    preprod:
+      - step:
+          script:
+            # test
+            - make install
+            - mongod --nojournal --noprealloc --fork --logpath=/var/log/mongod.log
+            - make test
+
+            # deploy
+            - export TAG="$BITBUCKET_BRANCH"_"$BITBUCKET_COMMIT"
+            - export BASE_IMAGE_URI=145424129263.dkr.ecr.eu-west-1.amazonaws.com/bulletinchat
+            - deploy/build_push.sh
+            - echo $TAG
+            - deploy/update_stack.sh Preprod $TAG
+            #- aws cloudformation update-stack --stack-name Preprod --use-previous-template --parameters ParameterKey="ContVersion",ParameterValue="$TAG" ParameterKey="VpcId",UsePreviousValue=true ParameterKey="SubnetID",UsePreviousValue=true ParameterKey="KeyName",UsePreviousValue=true --capabilities CAPABILITY_NAMED_IAM --region eu-west-1
+    master:
+      - step:
+          script:
+            # test
+            - make install
+            - mongod --nojournal --noprealloc --fork --logpath=/var/log/mongod.log
+            - make test
+
+            # deploy
+            - export TAG="$BITBUCKET_BRANCH"_"$BITBUCKET_COMMIT"
+            - export BASE_IMAGE_URI=145424129263.dkr.ecr.eu-west-1.amazonaws.com/bulletinchat
+            - deploy/build_push.sh
+            - echo $TAG
+            - deploy/update_stack.sh Production $TAG
+            #- aws cloudformation update-stack --stack-name Production --use-previous-template --parameters ParameterKey="ContVersion",ParameterValue="$TAG" ParameterKey="VpcId",UsePreviousValue=true ParameterKey="SubnetID",UsePreviousValue=true ParameterKey="KeyName",UsePreviousValue=true --capabilities CAPABILITY_NAMED_IAM --region eu-west-1
+
+

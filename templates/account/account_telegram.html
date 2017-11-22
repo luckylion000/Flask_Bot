@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% from 'auth/_macros.html' import show_success %}
+{% from 'account/_macros.html' import submenu %}
+
+{% block title %}Account - {{ name }}{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <form class="profile-form" method="POST" action="{{ url_for('auth.edit_account_telegram', aid=account_id) }}">
+            {{ form.csrf_token }}
+
+            <div class="col-sm-6">
+                {{ show_success() }}
+                {{ submenu(account_id) }}
+				<div class="tab-content">
+                    <div class="tab-pane active">
+                        <div class="panel-body">
+							{{ render_fields_group(obj=form.botconnection_telegram_name,
+										placeholder=form.botconnection_telegram_name.label.text) }}
+							{{ render_fields_group(obj=form.botconnection_telegram_token,
+												placeholder=form.botconnection_telegram_token.label.text) }}
+							<hr>
+							<button class="btn btn-primary" type="submit">Save</button>
+							<button class="btn btn-default" type="reset">Cancel</button>
+						</div>
+					</div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

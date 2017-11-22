@@ -1,0 +1,7 @@
+-r base.txt
+
+flake8==2.6.2
+flake8-import-order==0.8
+pycodestyle==2.0.0
+
+ipython

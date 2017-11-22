@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block page_header %}
+    <div class="col-sm-12">
+        <ol class="list-inline" id="navigation">
+            <li><a href="{{ url_for('index.user_profiling_stories') }}" class="text-primary">List of stories</a></li>
+            <li><a href="{{ url_for('index.user_profiling_stories_edit', sid=story.id) }}" class="text-primary active">{{ story.title }}</a></li>
+        </ol>
+
+        <h2>Edit profile story</h2>
+    </div>
+{% endblock %}
+
+{% block external_js %}
+    {% assets 'js_story_edit' %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+{% endblock %}
+
+{% block js_head_end %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var orderSaveUrl = "{{ url_for('index.profile_stories_order_fragments', sid=story.id) }}";
+            var typeAnswer = "{{ fragment.TYPE_ANSWER }}";
+
+            initStoryEdit(typeAnswer, orderSaveUrl, false);
+
+            $('#save_form').submit(function(event) {
+                var form = $(this);
+                form.find('#title').val(form.find('#title').val().slice(0, 150));
+            });
+
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    {% with record_name = 'fragment' %}
+        {% include 'includes/confirm-delete-modal.html' %}
+    {% endwith %}
+    {% include 'includes/backend-error-modal.html' %}
+
+    <form method="POST" action="{{ action_url }}" id="save_form">
+    <div class="row">
+        {{ form.csrf_token }}
+
+        <div class="col-sm-6">
+            {{ render_fields_group(obj=form.title, placeholder="Write your title here", required="") }}
+            <input class="btn btn-xs fragment-edit-counter" disabled type="text"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="bubble bubble-left">
+                <div class="bubble-body">
+                    {{ render_fields_group(obj=form.lead, placeholder="Write your lead here", required="") }}
+                    <input class="btn btn-xs fragment-edit-counter" disabled type="text"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+    <div class="row margin-top-10 margin-bottom-10">
+        <h3>Content</h3>
+    </div>
+
+    <div class="row margin-bottom-10">
+        <div class="col-sm-5 fragments-container">
+            {% for f in story.content_ordered_grouped %}
+                {% if f is list %}
+                    {% include 'includes/story-bubble-answer.html' %}
+                {% else %}
+                    {% include 'includes/story-bubble.html' %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    {% include 'includes/profile-story-fragments-form.html' %}
+
+    <div class="row" id="control-buttons">
+        <button class="btn btn-primary" id="add-paragraph">Add paragraph</button>
+        <button class="btn btn-primary" id="add-answer">Add answer</button>
+        <button class="btn btn-primary" id="add-question">Add question</button>
+    </div>
+
+    <div class="row margin-top-10">
+        <div class="col-sm-3">
+            <button class="btn btn-lg btn-primary btn-block" id="story-save" type="submit" onclick="$('#save_form').submit();">{{ action_label }}</button>
+        </div>
+    </div>
+{% endblock %}

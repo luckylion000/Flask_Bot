@@ -1,0 +1,173 @@
+<div class="row hidden" id="edit-fragment-type-{{ fragment.TYPE_ANSWER }}">
+    <span>
+        {{ text_form.text(class="form-control margin-bottom-10",
+                          placeholder="Enter text here",
+                          required="",
+                          rows=1) }}
+
+        <div class="help-block has-error hidden"></div>
+        <button class="btn btn-xs btn-default fragment-edit-cancel">Cancel</button>
+        <button class="btn btn-xs btn-outline btn-success fragment-edit-save">Save</button>
+        <input class="btn btn-xs fragment-edit-counter" disabled type="text"/>
+    </span>
+</div>
+
+
+<div class="row hidden" id="edit-fragment-type-{{ fragment.TYPE_PARAGRAPH }}">
+    <span>
+        {{ text_form.text(class="form-control margin-bottom-10",
+                          placeholder="Enter text here",
+                          required="",
+                          rows=10,
+                          cols=100) }}
+        <div class="help-block has-error hidden"></div>
+        <button class="btn btn-xs btn-default fragment-edit-cancel">Cancel</button>
+        <button class="btn btn-xs btn-outline btn-success fragment-edit-save">Save</button>
+        <input class="btn btn-xs fragment-edit-counter" disabled type="text"/>
+    </span>
+</div>
+
+<div class="row hidden" id="edit-fragment-type-{{ fragment.TYPE_POLL }}">
+    <span class="edit-poll-form">
+        {{ text_form.text(class="form-control margin-bottom-10",
+                          placeholder="Write your question here",
+                          required="",
+                          rows=10,
+                          cols=100) }}
+        <div class="help-block has-error hidden"></div>
+
+        <div class="poll-questions">
+            <div class="input-group" style="margin-bottom: 10px;">
+                <input type="text" name="question-0" class="form-control input-sm"/>
+                <span class="input-group-btn">
+                    <button class="btn btn-sm btn-danger btn-question-remove" type="button">
+                        <span class="glyphicon glyphicon-minus"></span>
+                    </button>
+                </span>
+            </div>
+        </div>
+
+        <button class="btn btn-xs btn-default btn-question-add" type="button">Add an option</button>
+        <button class="btn btn-xs btn-default fragment-edit-cancel">Cancel</button>
+        <button class="btn btn-xs btn-outline btn-success fragment-edit-save">Save</button>
+        <input class="btn btn-xs fragment-edit-counter" disabled type="text"/>
+    </span>
+</div>
+
+
+<div class="row hidden add-poll-form">
+    <form method="POST" action="{{ url_for('index.stories_poll_add', sid=sid) }}">
+        {{ form.csrf_token }}
+
+        <div class="col-sm-6"><div class="bubble bubble-left"><div class="bubble-body">
+            {{ render_fields_group(obj=poll_form.text,
+                                   input_extra_class="emoji-input",
+                                   label_text="Poll",
+                                   placeholder="Write your question here",
+                                   required="",
+                                   rows=10,
+                                   cols=100) }}
+
+            <div class="poll-questions">
+                <span id="skip_msg" class="hidden">{{skip_poll_message}}</span>
+                <div class="input-group" style="margin-bottom: 10px;">
+                    <input type="text" name="question-0" class="form-control" value="option 1"/>
+                    <span class="input-group-btn">
+                        <button class="btn btn-danger btn-poll-question-remove" type="button">
+                            <span class="glyphicon glyphicon-minus"></span>
+                        </button>
+                    </span>
+                </div>
+                <!-- default skip_poll option -->
+                <div class="input-group" style="margin-bottom: 10px;">
+                    <input type="text" name="question-1" class="form-control" value="{{skip_poll_message}}"/>
+                    <span class="input-group-btn">
+                        <button class="btn btn-danger btn-poll-question-remove" type="button">
+                            <span class="glyphicon glyphicon-minus"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+
+            <button class="btn btn-default btn-poll-question-add" type="button">Add an option</button>
+            <div class="help-block"></div>
+
+            <button class="btn btn-default" type="reset">Cancel</button>
+            <button class="btn btn-outline btn-success" type="submit">Add Poll</button>
+            <input class="btn fragment-edit-counter" disabled type="text"/>
+        </div></div></div>
+    </form>
+</div>
+
+<div class="row hidden add-paragraph-form">
+    <form method="POST" action="{{ url_for('index.stories_paragraph_add', sid=sid) }}">
+        {{ form.csrf_token }}
+
+        <div class="col-sm-6"><div class="bubble bubble-left"><div class="bubble-body">
+            {{ render_fields_group(obj=text_form.text,
+                                   input_extra_class="emoji-input",
+                                   label_text="Paragraph",
+                                   placeholder="Enter text here",
+                                   required="",
+                                   rows=10,
+                                   cols=100) }}
+            <div class="help-block"></div>
+            <button class="btn btn-default" type="reset">Cancel</button>
+            <button class="btn btn-outline btn-success" type="submit">Add paragraph</button>
+            <input class="btn fragment-edit-counter" disabled type="text"/>
+        </div></div></div>
+    </form>
+</div>
+
+<div class="row hidden add-answer-form">
+    <form method="POST" action="{{ url_for('index.stories_answer_add', sid=sid) }}">
+        {{ form.csrf_token }}
+
+        <div class="col-sm-6"><div class="bubble bubble-right"><div class="bubble-body">
+            {{ render_fields_group(obj=text_form.text,
+                                   input_extra_class="emoji-input",
+                                   label_text="Answer",
+                                   placeholder="Enter text here",
+                                   required="",
+                                   rows=1) }}
+
+            {{ render_fields_group(obj=text_form.action, label_text="Action") }}
+
+            <button class="btn btn-default" type="reset">Cancel</button>
+            <button class="btn btn-outline btn-success" type="submit">Add answer</button>
+            <input class="btn fragment-edit-counter" disabled type="text"/>
+        </div></div></div>
+    </form>
+</div>
+
+
+<div class="row hidden add-media-form">
+    <form method="POST" enctype=multipart/form-data action="{{ url_for('index.stories_media_add', sid=sid) }}">
+        {{ form.csrf_token }}
+
+        <div class="col-sm-6"><div class="bubble bubble-left"><div class="bubble-body">
+            <input type="file" name="media">
+
+			{{ render_fields_group(obj=text_form.text,
+                                   input_extra_class="input",
+                                   label_text="Caption",
+                                   placeholder="Enter caption to show with file",
+                                   required="",
+                                   rows=1) }}
+            <div class="help-block has-error hidden"></div>
+            <button class="btn btn-default" type="reset">Cancel</button>
+            <button class="btn btn-outline btn-success" type="submit">Add media</button>
+        </div></div></div>
+    </form>
+</div>
+
+<script>
+		$('input[type="file"]').bind('change', function() {
+			if(this.files[0].size/1024/1024>{{max_upload_file_size}}){
+				alert('Max size of uploaded files is {{max_upload_file_size}} Mb');
+				$(this).parents('form').find('*[type="submit"]').attr('disabled',true);
+			}else{
+				$(this).parents('form').find('*[type="submit"]').attr('disabled',false);
+			}
+        });
+</script>

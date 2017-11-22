@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}Bulletin.chat{% endblock %}
+
+{% block page_header %}
+	<div class="col-sm-12">
+		<ol class="list-inline" id="navigation">
+			<li><a href="{{ url_for('index.analytics') }}" class="text-primary">Analytics</a></li>
+			<li><a href="{{ url_for('index.polls') }}" class="text-primary active">List of Polls</a></li>
+		</ol>
+		<h1 style="color: black;">List of Polls</h1>
+	</div>
+{% endblock %}
+
+{% block content %}
+
+<script type="text/javascript" charset="utf8">
+  $(document).ready(function() {
+    $('#chat_users').dataTable({
+        "dom": 't'
+    });
+  });
+</script>
+
+<h4> Details for story: {{ s.title }} </h4>
+
+<div class="row">
+    <div class="col-md-12">
+								<div id="chartdiv{{s.id}}" style="width: 100%; height: 500px; background-color: #FFFFFF;" ></div>
+								<script>
+									AmCharts.makeChart("chartdiv{{s.id}}",
+									{
+										"type": "serial",
+                                    	"sequencedAnimation": false,
+										"categoryField": "category",
+										"columnSpacing": 0,
+										"columnWidth": 1,
+										"startDuration": 0,
+										"categoryAxis": {
+											"gridPosition": "start",
+											"position": "left"
+										},
+										"trendLines": [],
+										"graphs": [
+											{
+												"balloonText": "[[title]] of [[category]]:[[value]]",
+												"fillAlphas": 1,
+												"gapPeriod": 1,
+												"id": "AmGraph-1",
+												"title": "graph 1",
+												"type": "column",
+												"valueField": "column-1"
+											}
+										],
+										"guides": [],
+										"valueAxes": [
+											{
+												"id": "ValueAxis-3",
+                                                "minimum": 0,
+											}
+										],
+										"allLabels": [],
+										"balloon": {},
+										"titles": [],
+										"dataProvider": [
+										{% for f in readers_by_fragment %}
+											{
+												"category": "{{f.id}}",
+												"column-1": "{{f.num_readers}}"
+											},
+										{% endfor %}
+										]
+									}
+								);
+						</script>
+
+    </div>
+</div>
+
+<!--
+<div class="row">
+
+  <table class="table table-bordered bulletin-stories-table" id="chat_users">
+    <thead>
+      <tr>
+        <th>Chat Id</th>
+        <th>User Name</th>
+        <th>Read fragments</th>
+      </tr>
+    </thead>
+
+    <tbody>
+    {% for chat_user in chat_users %}
+      <tr>
+        <td>{{ chat_user.chat_id }}</td>
+        <td>{{ chat_user.name }}</td>
+        <td>{{ chat_user.story_fragments_count }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+</div>
+    -->
+{% endblock %}

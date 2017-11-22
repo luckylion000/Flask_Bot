@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block js_head_end %}
+    <script type="text/javascript">
+		var csrf_token = null;
+		var text = null;
+		var value = null;
+		
+		function btn_remove(i){
+			return '<button class="btn btn-sm btn-danger remove-options" id="remove-'+i+'" onclick="remove_opt('+i+');return false;"><i class="glyphicon glyphicon-remove"></i></button>';
+		}
+        $(document).ready(function() {
+			csrf_token = $('#options-0-csrf_token').clone();
+			text = $('#options-0-text').clone();
+			value = $('#options-0-value').clone();
+            $('ul#options input').each(function(){$(this).appendTo($('ul#options'))});
+			var i = 0; while($('#options-'+i+'-csrf_token').length>0){
+				$('input#options-'+i+'-value').after(btn_remove(i));
+				i++;
+			};
+			
+        });
+		function remove_opt(i){
+			$('#options-'+i+'-csrf_token').remove();
+			$('#options-'+i+'-text').remove();
+			$('#options-'+i+'-value').remove();
+			$('#remove-'+i).remove();
+		}
+		function add_option(){
+			var i = 0; while($('#options-'+i+'-csrf_token').length>0){i++};
+			var csrf_token_new = csrf_token.clone();
+			var text_new = text.clone();
+			var value_new = value.clone();
+			csrf_token_new.attr('id','options-'+i+'-csrf_token').attr('name','options-'+i+'-csrf_token');
+			text_new.attr('id','options-'+i+'-text').attr('name','options-'+i+'-text').val('');
+			value_new.attr('id','options-'+i+'-value').attr('name','options-'+i+'-value').val('');;
+			
+			csrf_token_new.appendTo($('ul#options'));
+			text_new.appendTo($('ul#options'));
+			value_new.appendTo($('ul#options'));
+			$('input#options-'+i+'-value').after(btn_remove(i));
+		}
+    </script>
+{% endblock %}
+
+{% block page_header %}
+    <h2>Edit a question</h2>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <form method="POST" action="{{ action_url }}">
+        {{ form.csrf_token }}
+
+        <div class='col-sm-6'>
+            {{ render_fields_group(obj=form.attribute, placeholder="Attribute", autofocus="", required="") }}
+            {{ render_fields_group(obj=form.type, autofocus="", required="") }}
+			{{ render_fields_group(obj=form.chart, autofocus="", required="") }}
+            {{ render_fields_group(obj=form.options, autofocus="") }}
+			<button class="btn btn-sm btn-primary btn-block add-option" onclick="add_option();return false;">Add option</button>
+            
+			</div>
+         <div class='col-sm-12'></div><div class='col-sm-6'></div>
+		<div class='col-sm-6'><button class="btn btn-lg btn-primary btn-block option-save" type="submit">{{ action_label }}</button></div>
+    </form>
+</div>
+{% endblock %}

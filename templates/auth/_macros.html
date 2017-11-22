@@ -1,0 +1,23 @@
+{% macro show_success() %}
+
+    {% with errors = get_flashed_messages(category_filter=['success']) %}
+        {% if errors %}
+            <div class="alert alert-success text-center" role="alert">
+                {%- for msg in errors %}
+                    <div>{{ msg }}</div>
+                {% endfor -%}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% with errors = get_flashed_messages(category_filter=['error']) %}
+        {% if errors %}
+            <div class="alert alert-danger text-center">
+                {%- for msg in errors %}
+                    <div>{{ msg }}</div>
+                {% endfor -%}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+{% endmacro %}

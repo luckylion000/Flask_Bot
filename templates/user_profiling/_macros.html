@@ -1,0 +1,11 @@
+{% macro submenu(account_id) %}
+    <div class="tabs-container">
+		<ul class="nav nav-tabs">
+            <li {% if request.path == url_for('index.user_profiling_attributes') %} class="active" {% endif %} >
+                <a href="{{ url_for('index.user_profiling_attributes') }}">Attributes</a>
+            </li>
+            <li {% if request.path == url_for('index.user_profiling_stories') %} class="active" {% endif %}>
+                <a href="{{ url_for('index.user_profiling_stories') }}">Profiling stories</a>
+            </li>
+        </ul>
+{% endmacro %}

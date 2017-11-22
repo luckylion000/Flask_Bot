@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Request Early Access{% endblock %}
+
+{% block content %}
+    <div class="middle-box row text-center loginscreen animated fadeInDown" style="margin-top: 0px;">
+        <div>
+            <div>
+                <img src="{{ url_for('static', filename='images/login_logo.png') }}" alt="bulletin.chat">
+            </div>
+        </div>
+        <div>
+            <form class="m-t profile-form" method="POST" action="{{ url_for('auth.early_access') }}">
+                {{ form.csrf_token }}
+
+                <h3 class="category">Request Early Access</h3>
+                {{ render_fields_group(obj=form.name, placeholder=form.name.label.text) }}
+                {{ render_fields_group(obj=form.email, placeholder=form.email.label.text) }}
+
+
+                <button type="submit" class="btn btn-success full-width m-b">Request early access!</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

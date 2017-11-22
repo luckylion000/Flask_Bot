@@ -1,0 +1,35 @@
+{% extends 'auth/base.html' %}
+
+{% block title %}Log-in | newsbot{% endblock %}
+
+{% block content %}
+<div class="middle-box text-center loginscreen animated fadeInDown">
+    <div>
+        <div>
+            <img src="{{ url_for('static', filename='images/login_logo.png') }}" alt="bulletin.chat">
+        </div>
+    </div>
+    <div>
+        <form class="m-t" method="POST" action="{{ url_for('auth.login') }}">
+            {{ form.csrf_token }}
+
+            <div class="form-group {{ 'has-error' if form.email.errors }}">
+                {% if form.email.errors %}
+                    {% for error in form.email.errors %}
+                        {{ form.email.label(class="control-label", text=error) }}
+                    {% endfor %}
+                {% endif %}
+                {{ form.email(size=20, class="form-control", placeholder=form.email.label.text, required="", autofocus="") }}
+            </div>
+            <div class="form-group">
+                {{ form.password(size=20, class="form-control", placeholder=form.password.label.text, required="") }}
+            </div>
+
+            <button class="btn btn-success block full-width m-b" type="submit">Login</button>
+            <a href="{{ url_for('auth.reset') }}"><small>Forgot password?</small></a>
+            <p class="text-muted text-center"><small>Do not have an account?</small></p>
+            <a class="btn btn-sm btn-white btn-block" href="{{ url_for('auth.register') }}">Create an account</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

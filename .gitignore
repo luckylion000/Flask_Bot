@@ -1,0 +1,15 @@
+*.pyc
+*.log
+.idea
+todo.txt
+settings_local.py
+node_modules
+bower_components
+static/dist
+static/.webassets-cache
+celerybeat-schedule.dat
+celerybeat-schedule.dir
+celerybeat.pid
+env
+venv3/
+.cache/

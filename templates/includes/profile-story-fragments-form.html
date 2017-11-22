@@ -1,0 +1,126 @@
+<div class="row hidden" id="edit-fragment-type-{{ fragment.TYPE_ANSWER }}">
+    <span>
+        {{ text_form.text(class="form-control margin-bottom-10",
+                          placeholder="Enter text here",
+                          required="",
+                          rows=1) }}
+
+        <div class="help-block has-error hidden"></div>
+        <button class="btn btn-xs btn-default fragment-edit-cancel">Cancel</button>
+        <button class="btn btn-xs btn-outline btn-success fragment-edit-save">Save</button>
+        <input class="btn btn-xs fragment-edit-counter" disabled type="text"/>
+    </span>
+</div>
+
+<div class="row hidden" id="edit-fragment-type-{{ fragment.TYPE_PARAGRAPH }}">
+    <span>
+        {{ text_form.text(class="form-control margin-bottom-10",
+                          placeholder="Enter text here",
+                          required="",
+                          rows=10,
+                          cols=100) }}
+        <div class="help-block has-error hidden"></div>
+        <button class="btn btn-xs btn-default fragment-edit-cancel">Cancel</button>
+        <button class="btn btn-xs btn-outline btn-success fragment-edit-save">Save</button>
+        <input class="btn btn-xs fragment-edit-counter" disabled type="text"/>
+    </span>
+</div>
+
+<div class="row hidden" id="edit-fragment-type-{{ fragment.TYPE_QUESTION }}">
+    <span class="edit-question-form">
+        {{ text_form.text(class="form-control margin-bottom-10",
+                          placeholder="Enter text here",
+                          required="",
+                          rows=10,
+                          cols=100) }}
+        <div class="help-block has-error hidden"></div>
+
+        <div class="question-attribute">
+            <div class="input-group" style="margin-bottom: 10px;">
+                <label>Attribute associated:</label>
+                <select class="form-control" name="attribute">
+                    {% for attr in attributes %}
+                        <option value="{{attr.id}}">{{attr.attribute}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <button class="btn btn-xs btn-default fragment-edit-cancel">Cancel</button>
+        <button class="btn btn-xs btn-outline btn-success fragment-edit-save">Save</button>
+        <input class="btn btn-xs fragment-edit-counter" disabled type="text"/>
+    </span>
+</div>
+
+<div class="row hidden add-question-form">
+    <form method="POST" action="{{ url_for('index.profile_stories_question_add', sid=story.id) }}">
+        {{ form.csrf_token }}
+
+        <div class="col-sm-6"><div class="bubble bubble-left"><div class="bubble-body">
+            {{ render_fields_group(obj=text_form.text,
+                                   input_extra_class="emoji-input",
+                                   label_text="Question",
+                                   placeholder="Enter text here",
+                                   required="",
+                                   rows=10,
+                                   cols=100) }}
+
+            <div class="question-attribute">
+                <div class="input-group" style="margin-bottom: 10px;">
+                    <label class="control-label">Attribute associated:</label>
+                    <select class="form-control" name="attribute">
+                        {% for attr in attributes %}
+                            <option value="{{attr.id}}">{{attr.attribute}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="help-block"></div>
+            <button class="btn btn-default" type="reset">Cancel</button>
+            <button class="btn btn-outline btn-success" type="submit">Add Question</button>
+            <input class="btn fragment-edit-counter" disabled type="text"/>
+        </div></div></div>
+    </form>
+</div>
+
+<div class="row hidden add-paragraph-form">
+    <form method="POST" action="{{ url_for('index.profile_stories_paragraph_add', sid=story.id) }}">
+        {{ form.csrf_token }}
+
+        <div class="col-sm-6"><div class="bubble bubble-left"><div class="bubble-body">
+            {{ render_fields_group(obj=text_form.text,
+                                   input_extra_class="emoji-input",
+                                   label_text="Paragraph",
+                                   placeholder="Enter text here",
+                                   required="",
+                                   rows=10,
+                                   cols=100) }}
+            <div class="help-block"></div>
+            <button class="btn btn-default" type="reset">Cancel</button>
+            <button class="btn btn-outline btn-success" type="submit">Add paragraph</button>
+            <input class="btn fragment-edit-counter" disabled type="text"/>
+        </div></div></div>
+    </form>
+</div>
+
+<div class="row hidden add-answer-form">
+    <form method="POST" action="{{ url_for('index.profile_stories_answer_add', sid=story.id) }}">
+        {{ form.csrf_token }}
+
+        <div class="col-sm-6"><div class="bubble bubble-right"><div class="bubble-body">
+            {{ render_fields_group(obj=text_form.text,
+                                   input_extra_class="emoji-input",
+                                   label_text="Answer",
+                                   placeholder="Enter text here",
+                                   required="",
+                                   rows=1) }}
+
+            {{ render_fields_group(obj=text_form.action, label_text="Action") }}
+
+            <button class="btn btn-default" type="reset">Cancel</button>
+            <button class="btn btn-outline btn-success" type="submit">Add answer</button>
+            <input class="btn fragment-edit-counter" disabled type="text"/>
+        </div></div></div>
+    </form>
+</div>

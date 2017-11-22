@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% from 'user_profiling/_macros.html' import submenu %}
+
+{% block external_js %}
+    {% assets 'js_bulletin_edit' %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+{% endblock %}
+
+{% block js_head_end %}
+	<script type="text/javascript">
+        var orderSaveUrl = "{{ url_for('index.profile_stories_order') }}";
+        var bulletinSchedule = true;
+        var bulletinIsPublished = false;
+
+        $(document).ready(function(){
+			$('div#confirm-delete .modal-body strong').html('question');
+            $('input[data-toggle="toggle"]').change(onToggleChange);
+
+            // toggle buttons handling
+            function onToggleChange(e) {
+                $.ajax({
+                    url: $(this).data('url'),
+                    type: 'PUT',
+                    data: {active: $(this).prop('checked')},
+                    context: this,
+                }).done(function(ret) {
+                    // disable or enable [edit, delete] links on current question
+                    var visiable = ret.active ? 'hidden' : 'visible';
+                    var tr = $(this).closest('tr');
+                    $(tr).find("div.profile_stories_options").css("visibility", visiable);
+                }).fail(function(ret) {
+                    // set active to previous state
+                    var state = $(this).prop('checked') ? 'off' : 'on';
+                    $(this).off('change');
+                    $(this).bootstrapToggle(state);
+                    $(this).on('change', onToggleChange);
+                });
+            }
+		});
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12">
+            <ol class="list-inline" id="navigation">
+                <li><a href="{{ url_for('index.user_profiling_attributes') }}" class="text-primary active">User Profiling</a></li>
+            </ol>
+            <h1 style="color: black;">User Profiling</h1>
+        </div>
+    </div>
+    {% with record_name = 'bulletin' %}
+        {%  include "includes/confirm-delete-modal.html" %}
+    {%  endwith %}
+
+    <div class="row">
+        <div class="col-sm-12">
+            {{ submenu(account_id) }}
+            <div class="tab-content">
+                <div class="tab-pane active">
+                    <div class="panel-body">
+                        <h2>
+                            Stories
+                            <a href="{{ url_for('index.user_profiling_stories_add') }}" class="btn btn-success right-position">Add a New Story</a>
+                        </h2>
+                        <table class="table table-bordered" id="profile_stories_list">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Attributes</th>
+                                    <th>Active</th>
+                                    <th>Options</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Attributes</th>
+                                    <th>Active</th>
+                                    <th>Options</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                {% for s in profile_stories %}
+                                    <tr class="story-actions-container"
+                                        data-story-order="{{ s.order }}"
+                                        data-story-id="{{ s.id }}">
+                                        <td>{{ s.title }}</td>
+                                        <td>
+                                            {% if s.content|selectattr("type", "equalto", fragment.TYPE_QUESTION)|list|length > 0 %}
+                                                [
+                                                {% for f in s.content|selectattr("type", "equalto", fragment.TYPE_QUESTION) %}
+                                                    <div class="o-item">
+                                                        {{ f.attribute.attribute }}
+                                                    </div>
+                                                {% endfor %}
+                                                ]
+                                            {% else %}
+                                                [ - ]
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <input {% if s.active %}checked{% endif %} data-toggle="toggle" type="checkbox" data-url="{{ url_for('index.profile_story_activate_ajax', sid=s.id) }}">
+                                        </td>
+                                        <td>
+                                            <div class="profile_stories_options" style="visibility:{% if s.active %}hidden{% else %}visiable{% endif %}">
+                                                <button class="btn btn-link text-info action-btn">
+                                                    <a href="{{ url_for('index.user_profiling_stories_edit', sid=s.id) }}">Edit</a>
+                                                </button>
+
+                                                <button class="btn btn-link text-danger action-btn"
+                                                    data-href="{{ url_for('index.profile_stories_delete', sid=s.id) }}"
+                                                    data-toggle="modal"
+                                                    data-target="#confirm-delete">Delete</button>
+
+                                                <button class="btn btn-link btn-xs increase-order">
+                                                    <span class="glyphicon glyphicon-triangle-top" aria-label="up"></span>
+                                                </button>
+                                                <button class="btn btn-link btn-xs decrease-order">
+                                                    <span class="glyphicon glyphicon-triangle-bottom" aria-label="down"></span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+    </div>
+{% endblock %}

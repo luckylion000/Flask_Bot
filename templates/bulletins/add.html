@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block js_head_end %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            initCalendarWidget();
+
+            $('#add_bulletin').submit(function(event) {
+                var form = $(this);
+                var publish_at = form.find('input#publish_at').val();
+                publish_at = moment(publish_at, 'MM/DD/YYYY HH:mm');
+                var title = publish_at.format("[Bulletin for] MM/DD/YYYY [at] HH:mm");
+                form.find('input#title').val(title);
+            });
+
+        });
+    </script>
+{% endblock %}
+
+{% block page_header %}
+    <h2>Add bulletin</h2>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <form method="POST" action="{{ action_url }}" id="add_bulletin">
+        {{ form.csrf_token }}
+
+        <div class='col-sm-6'>
+            <input type="hidden" id="title" name="title" value=""/>
+
+            <div class="form-group">
+                {{ form.publish_at.label(class="control-label") }}
+
+                <div class="input-group date" id="datetimepicker1">
+                    {{ form.publish_at(class="form-control", required="") }}
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+
+                </div>
+            </div>
+
+            {{ render_fields_group(obj=form.expire_hours, placeholder="Number of hours to expire after", required="") }}
+
+            <div class="checkbox disabled">
+                <label>
+                    {{ form.is_published(disabled="disabled") }} {{ form.is_published.label(class="control-label") }}
+                    (text to allow publish later)
+                </label>
+            </div>
+
+            <button class="btn btn-lg btn-primary btn-block" type="submit">{{ action_label }}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

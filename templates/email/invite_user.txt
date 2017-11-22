@@ -1,0 +1,6 @@
+Hi {{ username }},
+
+Someone invite you to access {{ account_name }}.
+You already got access, so just login at {{ index_link }} and access this account using the dropdown menu!
+
+Bulletinchat team.

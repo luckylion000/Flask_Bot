@@ -1,0 +1,219 @@
+{% macro render_fields_group(obj, label_text="", input_extra_class="") -%}
+    <div class="form-group {{ 'has-error' if obj.errors }}">
+        {{ obj.label(class="control-label", text=label_text) }}
+        {{ obj(class="form-control " + input_extra_class, **kwargs)}}
+        {% if obj.errors %}
+            <div class="help-block">
+                {% for error in obj.errors %}
+                    {{ obj.label(class="control-label", text=error) }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{%- endmacro %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}Bulletin.chat{% endblock %}
+    </title>
+
+    {% assets 'css_main' %}
+        <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">
+    {% endassets %}
+
+    {% block external_js %}
+        {% assets 'js_main' %}
+            <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+        {% endassets %}
+    {% endblock %}
+
+    {% block js_head_end %}{% endblock %}
+
+     <script type="text/javascript">
+        $(document).ready(function() {
+            var csrftoken = $('meta[name=csrf-token]').attr('content');
+
+            $.ajaxSetup({
+                beforeSend: function (xhr, settings) {
+                    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                    }
+                }
+            });
+        });
+     </script>
+</head>
+<body class="gray-bg top-navigation">
+    {% block body %}
+        <div id="page-wrapper">
+            {% if current_user.is_authenticated %}
+                <div class="row border-bottom white-bg">
+                    <nav class="navbar navbar-static-top" role="navigation">
+                        <div class="container-fluid">
+                            <div class="navbar-header">
+                                <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
+                                    <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+                                </button>
+                                <a href="/" class="navbar-logo"><img src="{{ url_for('static', filename='images/Logo.png') }}" alt=""></a>
+                            </div>
+                            <div class="navbar-collapse collapse" id="navbar">
+							{% if current_user.accounts %}
+                                <ul class="nav navbar-nav">
+                                    <li class="{{ 'active' if url_for('index.bulletins_list') in request.path }}" role="button">
+                                        {% if request.path == url_for('index.bulletins_list') %}
+                                            <a href="#">Bulletins</a>
+                                        {% else %}
+                                            <a href="{{ url_for('index.bulletins_list') }}">Bulletins</a>
+                                        {% endif %}
+                                    </li>
+                                    <li class="{{ 'active' if url_for('index.audience') in request.path }}" role="button">
+                                        {% if url_for('index.audience') in request.path %}
+                                            <a href="#">Audience</a>
+                                        {% else %}
+                                            <a href="{{ url_for('index.audience') }}">Audience</a>
+                                        {% endif %}
+                                    </li>
+                                    <li class="dropdown {{ 'active' if request.path == url_for('index.analytics') or request.path == url_for('index.polls') }}">
+                                        <a href="#"
+                                           class="dropdown-toggle"
+                                           data-toggle="dropdown"
+                                           role="button"
+                                           aria-haspopup="true"
+                                           aria-expanded="false">
+                                            <!-- <i class="glyphicon glyphicon-user"></i> --> Analytics <span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="{{ url_for('index.analytics') }}">Stories</a></li>
+                                            <li><a href="{{ url_for('index.polls') }}">Polls</a></li>
+
+                                        </ul>
+                                    </li>
+                                    <!--
+									<li class="{{ 'active' if request.path == url_for('index.analytics') }}">
+                                        {% if request.path == url_for('index.analytics') %}
+                                            <a href="#">Analytics</a>
+                                        {% else %}
+                                            <a href="{{ url_for('index.analytics') }}">Analytics</a>
+                                        {% endif %}
+                                    </li>
+                                    -->
+
+                                    <li class="{{ 'active' if request.path == url_for('auth.edit_account', aid=g.current_account.id) }}">
+                                        {% if request.path == url_for('auth.edit_account', aid=g.current_account.id) %}
+                                            <a href="#">Settings</a>
+                                        {% else %}
+                                            <a href="{{ url_for('auth.edit_account', aid=g.current_account.id) }}">Settings</a>
+                                        {% endif %}
+                                    </li>
+									
+									<li class="{{ 'active' if request.path == url_for('index.user_profiling_attributes') }}">
+                                        {% if request.path == url_for('index.user_profiling_attributes', aid=g.current_account.id) %}
+                                            <a href="#">User Profiling</a>
+                                        {% else %}
+                                            <a href="{{ url_for('index.user_profiling_attributes') }}">User Profiling</a>
+                                        {% endif %}
+                                    </li>
+
+                                </ul>
+							{% endif %}
+                                    <ul class="nav navbar-top-links navbar-right">
+                                        <li class="dropdown">
+                                            <a href="#"
+                                            class="dropdown-toggle"
+                                            data-toggle="dropdown"
+                                            role="button"
+                                            aria-haspopup="true"
+                                            aria-expanded="false">
+                                                <i class="glyphicon glyphicon-user"></i> {{ current_user.name }} | {{ g.current_account.name }}<span class="caret"></span>
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li class="dropdown-header">My account</li>
+
+                                                <li>
+                                                    <a href="{{ url_for('auth.edit_profile') }}">Profile</a>
+                                                </li>
+                                                <li role="separator" class="divider"></li>
+                                                <li class="dropdown-header">Switch account</li>
+                                                {% for account in current_user.accounts %}
+                                                    <li>
+                                                        <a href="{{ url_for('auth.switch_account', aid=account.id) }}">
+                                                            {{ account.name }}
+                                                            {% if account.id == g.current_account.id %}
+                                                                <i class="glyphicon glyphicon-ok"></i>
+                                                            {% endif %}
+                                                        </a>
+                                                    </li>
+                                                {% endfor %}
+                                                <li role="separator" class="divider"></li>
+                                                <li>
+                                                    <a href="{{ url_for('auth.account_create') }}"><i class="glyphicon glyphicon-plus-sign"></i> New account </a>
+                                                </li>
+                                                <li role="separator" class="divider"></li>
+                                                {% if current_user.role == 'superadmin' %}
+                                                <li>
+                                                    <a href="{{ url_for('admin.index') }}">Admin</a>
+                                                </li>
+                                                {% endif %}
+                                                <li>
+                                                    <a href="{{ url_for('auth.logout') }}">Logout</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            {% endif %}
+
+            <div class="wrapper wrapper-content">
+                <div class="container margin-bottom-30">
+                    <div class="row">
+                        {% block page_header %}{% endblock %}
+                    </div>
+
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+
+            {% if current_user.is_authenticated %}
+                <div class="footer">
+                    <div class="pull-left">
+                        <strong>Bulletin.chat - 2017</strong>
+                    </div>
+                    <div class="text-center">
+                        <ol class="list-inline">
+                            <li>
+                                <a href="{{ url_for('index.about') }}">
+                                    <strong class="text-info">About</strong>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ url_for('index.faq') }}">
+                                    <strong class="text-info">FAQ</strong>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ url_for('index.terms') }}">
+                                    <strong class="text-info">Terms of Service</strong>
+                                </a>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {% endblock %}
+
+    {% block footer %}
+
+    {% endblock %}
+</body>
+</html>

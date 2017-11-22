@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% from 'auth/_macros.html' import show_success %}
+{% from 'account/_macros.html' import submenu %}
+
+{% block title %}Account - {{ account.name }}{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-6">
+            {{ show_success() }}
+            {{ submenu(account.id) }}
+                <div class="tab-content">
+                    <div class="tab-pane active">
+                        <div class="panel-body">
+                            <form action="{{ url_for('auth.account_facebook_get_pages', aid=account.id) }}" method="GET">
+                                Login to facebook and load pages: <button type="submit" class="facebook_button">Login</button>
+                            </form>
+                            <br/>
+
+                            Facebook Account: {{ account.facebook_username|default('', true) }}
+                            <br/>
+                            <br/>
+
+                            <form class="profile-form" method="POST" action="{{ url_for('auth.edit_account_facebook', aid=account.id) }}">
+                                {{ form.csrf_token }}
+
+                                {{ render_fields_group(obj=form.page, placeholder=form.page.label.text) }}
+                                <hr>
+
+                                <button class="btn btn-primary" type="submit">Save</button>
+                                <button class="btn btn-default" type="reset">Cancel</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+    </div>
+{% endblock %}

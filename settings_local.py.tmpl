@@ -1,0 +1,28 @@
+SERVER_NAME = 'localhost'
+DEBUG = False
+TEMPLATES_AUTO_RELOAD = False
+
+USERS = {
+    'xxx': 'pass'
+}
+
+SECRET_KEY = 'secret'
+
+AWS_S3_KEY = "key"
+AWS_S3_SECRET = "secret"
+AWS_S3_BUCKET = "bucket"
+AWS_S3_REGION = "eu-west-1"
+
+# Two styles of MongoDB settings:
+# the first
+MONGODB_SETTINGS = {
+    'db': 'test',
+    'host': 'localhost',
+    'username': 'webapp',
+    'password': 'pwd123'
+}
+
+# the second
+# MONGODB_SETTINGS = {
+#     'host': 'mongodb://user:password@host_name/database_name'
+# }

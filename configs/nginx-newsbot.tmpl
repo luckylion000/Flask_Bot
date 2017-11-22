@@ -1,0 +1,16 @@
+server {
+    listen 80;
+    # do not forget to set correct server_name
+    server_name localhost;
+    client_max_body_size 5M;
+
+    location / {
+        include uwsgi_params;
+        # must be the same as uWSGI socket
+        uwsgi_pass unix:/tmp/newsbot.sock;
+    }
+
+    location /static {
+        alias /opt/projects/newsbot/static;
+    }
+}

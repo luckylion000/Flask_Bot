@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Bulletin.chat{% endblock %}
+
+{% block page_header %}
+	<div class="col-sm-12">
+		<ol class="list-inline" id="navigation">
+			<li><a href="{{ url_for('index.analytics') }}" class="text-primary">Analytics</a></li>
+			<li><a href="{{ url_for('index.analytics') }}" class="text-primary active">Stories</a></li>
+		</ol>
+		<h1 style="color: black;">Stories</h1>
+	</div>
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+	<form method="get">
+		<div class="col-md-4">
+			<label>Date range</label>
+			<div class="input-daterange input-group">
+				<input id="analitics_from" type="text" class="form-control" name="f" value="{{date_from if date_from else ''}}"/>
+				<span class="input-group-addon">to</span>
+				<input id="analitics_to" type="text" class="form-control" name="t" value="{{date_to if date_to else ''}}"/>
+			</div>
+		</div>
+        <div class="col-md-2">
+			<label>Sort by:</label> 
+			<select  id="analitics_sort" name="s" class="form-control">
+				<option value="r" {% if sort == 'r' %} selected {% endif %}>Readers</option>
+				<option value="p" {% if sort != 'r' %} selected {% endif %}>Published at</option>
+			</select>
+		</div>
+		</form>
+        <div class="col-md-12">
+		<br>
+		<br>
+		<div class="ibox ibox-content">
+             <table class="table table-striped bulletin-stories-table" id="analitics-table">
+				<thead>
+					<tr>
+						<th>Story</th>
+						<th>Published</th>
+						<th>Answers</th>
+						<!-- <th>Readers by fragment</th> -->
+					</tr>
+				</thead>
+				<tbody>
+					{% for s in stories %}
+						<tr>
+							<td><a href="{{ url_for('index.analytics_story', story_id=s.id) }}" class="text-info action-btn">{{s.title}}</a></td>
+							<td>{{s.publish_at.strftime("%Y-%m-%d %H:%M") }}</td>
+							<td>{{s.readers }}</td>
+							<!-- <td></td> -->
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+        </div>
+
+        <div class="col-md-3"></div>
+    </div>
+<script>
+	$('#analitics-table').DataTable({
+		bFilter: false,
+		bInfo: false,
+		"iDisplayLength": 25,
+		"ordering": false,
+        "info":     false
+	});
+</script>
+{% endblock %}

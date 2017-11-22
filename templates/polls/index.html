@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Bulletin.chat{% endblock %}
+
+{% block page_header %}
+	<div class="col-sm-12">
+		<ol class="list-inline" id="navigation">
+			<li><a href="{{ url_for('index.analytics') }}" class="text-primary">Analytics</a></li>
+			<li><a href="{{ url_for('index.polls') }}" class="text-primary active">List of Polls</a></li>
+		</ol>
+		<h1 style="color: black;">List of Polls</h1>
+	</div>
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox ibox-content">
+                <table class="table table-striped bulletin-stories-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Answers</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for f in poll_fragments %}
+                            <tr>
+                                <td><a href="{{ url_for('index.view_poll', poll_id=f.id) }}" class="text-info action-btn">{{ f.text }}</a></td>
+                                <td>{{ f.answers }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{
+  "name": "newsbot",
+  "version": "1.0.0",
+  "bugs": {
+    "url": "https://bitbucket.org/maubelabs/newsbot"
+  },
+  "description": "newsbot",
+  "homepage": "http://newsbot.com/",
+  "license": "Proprietary",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/maubelabs/newsbot"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "bower": "^1.8.0",
+    "eslint-config-google": "^0.6.0"
+  },
+  "eslintConfig": {
+    "extends": "google",
+    "env": {
+      "browser": true,
+      "jquery": true
+    },
+    "rules": {
+      "indent": [
+        "error",
+        4
+      ],
+      "no-unused-vars": [
+        "error",
+        {
+          "vars": "local",
+          "args": "none"
+        }
+      ]
+    },
+    "globals": {
+      "initCalendarWidget": true,
+      "initModalBackendError": true,
+      "modalBackendError": true,
+      "orderSaveUrl": true,
+      "bulletinIsPublished": true,
+      "emojione": true
+    }
+  },
+  "scripts": {
+    "lint": "./node_modules/eslint/bin/eslint.js static/*.js"
+  }
+}

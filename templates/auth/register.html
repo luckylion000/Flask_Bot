@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign up{% endblock %}
+
+{% block content %}
+    <div class="middle-box row text-center loginscreen animated fadeInDown" style="margin-top: 0px;">
+        <div>
+            <div>
+                <img src="{{ url_for('static', filename='images/login_logo.png') }}" alt="bulletin.chat">
+            </div>
+        </div>
+        <div>
+            <form class="m-t profile-form" method="POST" action="{{ url_for('auth.register') }}">
+                {{ form.csrf_token }}
+
+                <h3 class="category">Personal</h3>
+                {{ render_fields_group(obj=form.name, placeholder=form.name.label.text) }}
+                {{ render_fields_group(obj=form.email, placeholder=form.email.label.text) }}
+                {{ render_fields_group(obj=form.password, placeholder=form.password.label.text) }}
+                {{ render_fields_group(obj=form.code, placeholder=form.code.label.text) }}
+
+                <h3 class="category">Company</h3>
+                {{ render_fields_group(obj=form.account.form.name, placeholder=form.account.form.name.label.text) }}
+                {{ render_fields_group(obj=form.account.form.audience) }}
+                {{ render_fields_group(obj=form.account.form.timezone) }}
+
+                <button type="submit" class="btn btn-success full-width m-b">Create your bot now!</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

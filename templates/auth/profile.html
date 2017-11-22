@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% from 'auth/_macros.html' import show_success %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <form class="profile-form" method="POST" action="{{ url_for('auth.edit_profile') }}">
+            {{ form.csrf_token }}
+
+            <div class="col-sm-3">
+                {{ show_success() }}
+
+                <h4>Personal</h4>
+                <hr>
+
+                {{ render_fields_group(obj=form.name, placeholder=form.name.label.text, autofocus="", required="") }}
+                {{ render_fields_group(obj=form.email, placeholder=form.email.label.text, required="") }}
+
+                <div class="spacer"></div>
+                <h4>Change Password</h4>
+                <hr>
+
+                {{ render_fields_group(obj=form.old_password, placeholder=form.old_password.label.text) }}
+                {{ render_fields_group(obj=form.new_password, placeholder=form.new_password.label.text) }}
+                {{ render_fields_group(obj=form.new_password1, placeholder=form.new_password1.label.text) }}
+
+                <button class="btn btn-primary" type="submit">Save</button>
+                <button class="btn btn-default" type="reset">Cancel</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

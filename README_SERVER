@@ -1,0 +1,14 @@
+Steps to install server
+=======================
+
+apt-get install nginx
+apt-get install npm
+pip install uwsgi
+
+Fancy command!
+
+Fancy command 2!
+
+Fancy command 3!
+
+Fancy command 4!

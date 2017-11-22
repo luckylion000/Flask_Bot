@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block js_head_end %}
+    <script>
+        var data = {{ total_users_platform|tojson }};
+
+        $(document).ready(function() {
+
+            AmCharts.makeChart("chartdiv", {
+                "type": "pie",
+                "theme": "light",
+                "dataProvider": data,
+                "valueField": "value",
+                "titleField": "title",
+                "balloon":{
+                    "fixedPosition":true,
+                },
+                "export": {
+                    "enabled": false,
+                    "libs": { "autoLoad": false }
+                },
+            });
+
+        });
+    </script>
+
+{% endblock %}
+
+{% block page_header %}
+    <script type="text/javascript">
+        var user_growth = {{ account_stats|tojson }};
+		var questions = {{ questions|tojson }};
+		var pathToImages = "{{pathToImages}}";
+
+        $(document).ready(function() {
+			for (var q_id in questions) {
+				if (questions.hasOwnProperty(q_id)) {
+					var q_data = $.map(questions[q_id].answers, function(value, index) {
+						return {answer: index, value: value};
+					});
+
+					switch (questions[q_id].chart) {
+						case 'bars':
+							render_serial_chart(q_id, q_data, "answer",
+								questions[q_id].name, pathToImages
+							);
+							break;
+						case 'pie':
+							render_pie_chart(q_id, q_data, "answer",
+								questions[q_id].name, pathToImages
+							);
+							break;
+						default:
+							render_serial_chart(q_id, q_data, "answer");
+					}
+				}
+			}
+
+			render_user_growth_chart("user-growth-chart", user_growth, "date", pathToImages);
+        });
+    </script>
+
+	<div class="col-sm-12">
+		<ol class="list-inline" id="navigation">
+			<li><a href="{{ url_for('index.audience') }}" class="text-primary active">Audience</a></li>
+		</ol>
+		<h2>Audience</h2>
+	</div>
+
+{% endblock %}
+
+{% block content %}
+	<!-- User growth chart -->
+    <div class="row">
+        <div class="col-sm-12">
+			<div class="ibox-content">
+				<div id="user-growth-chart" class="audience-chart"></div>
+			</div>
+        </div>
+    </div>
+	<!-- Details link -->
+	<div class="row text-right">
+		<div class="col-xs-12">
+			<a href="{{ url_for('index.audience_details') }}">details</a>
+		</div>
+	</div>
+	<!-- Total users, Active users numbers -->
+    <div class="row text-center">
+		<div class="col-sm-3 col-xs-6">
+			<h3>Total current users:</h3>
+		</div>
+		<div class="col-sm-3 col-xs-6">
+			<h3>{{total_users}}</h3>
+		</div>
+		<div class="col-sm-3 col-xs-6">
+			<h3>Active users (last 24h):</h3>
+		</div>
+		<div class="col-sm-3 col-xs-6">
+			<h3>{{active_users_last24h}}</h3>
+		</div>
+    </div>
+	<!-- View all users link -->
+	<div class="row text-center">
+		<div class="col-sm-offset-3 col-xs-offset-6 col-sm-3 col-xs-6">
+			<a href="{{ url_for('index.chatusers_list') }}">view all users</a>
+		</div>
+	</div>
+	<!-- Render charts for each question -->
+    <div class="row">
+		{% for id, q in questions.items() %}
+			<div class="col-sm-6">
+				<div class="ibox-content text-center">
+					<h3>{{q.name}}</h3>
+					<div id="{{id}}" class="audience-chart"></div>
+				</div>
+			</div>
+		{% endfor %}
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div id="chartdiv" style="width: 100%; height: 400px;"></div>
+        </div>
+    </div>
+
+{% endblock %}

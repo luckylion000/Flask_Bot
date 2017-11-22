@@ -1,0 +1,107 @@
+{% if f.type == fragment.TYPE_IMAGE %}
+    {% set cls = 'bubble-left bubble-nopadding' %}
+{% elif f.type == fragment.TYPE_POLL or f.type == fragment.TYPE_PARAGRAPH or f.type == fragment.TYPE_DOCUMENT or  f.type == fragment.TYPE_AUDIO  or  f.type == fragment.TYPE_VIDEO or f.type == fragment.TYPE_QUESTION %}
+    {% set cls = 'bubble-left' %}
+{% else %}
+    {% set cls = 'bubble-right' %}
+    {% if f.action == fragment.ACTION_NEXT %}
+        {% set cls = 'bubble-right' %}
+    {% endif %}
+{% endif %}
+
+<div class="bubble {{ cls }}">
+
+    <div class="bubble-actions-container">
+        {% if f.type == fragment.TYPE_PARAGRAPH or f.type == fragment.TYPE_ANSWER or f.type == fragment.TYPE_DOCUMENT  or f.type == fragment.TYPE_AUDIO or  f.type == fragment.TYPE_VIDEO or f.type == fragment.TYPE_QUESTION %}
+            <button class="btn-link btn-xs edit-fragment"
+                    data-fragment-id="{{ f.id }}">
+                <span class="glyphicon glyphicon-pencil" aria-label="edit"></span>
+            </button>
+        {% elif f.type == fragment.TYPE_POLL %}
+            <button class="btn-link btn-xs edit-poll-fragment"
+                    data-fragment-id="{{ f.id }}">
+                <span class="glyphicon glyphicon-pencil" aria-label="edit"></span>
+            </button>
+        {% endif %}
+        <button class="btn btn-link btn-xs decrease-order">
+            <span class="glyphicon glyphicon-triangle-bottom" aria-label="down"></span>
+        </button>
+        <button class="btn btn-link btn-xs increase-order">
+            <span class="glyphicon glyphicon-triangle-top" aria-label="up"></span>
+        </button>
+        <button class="btn btn-link btn-xs"
+                data-target="#confirm-delete"
+                data-toggle="modal"
+                {% if story._meta['collection'] == 'story' %}
+                data-href="{{ url_for('index.fragments_delete', sid=sid, fid=f.id) }}">
+                {% else %}
+                data-href="{{ url_for('index.profile_fragments_delete', sid=story.id, fid=f.id) }}">
+                {% endif %}
+            <span class="glyphicon glyphicon-remove fragment-delete" aria-label="delete"></span>
+        </button>
+    </div>
+
+    <div class="bubble-body"
+         data-fragment-id="{{ f.id }}"
+         data-fragment-type="{{ f.type }}"
+         {% if story._meta['collection'] == 'story' %}
+         data-save-url="{{ url_for('index.stories_fragment_update', fid=f.id) }}">
+         {% else %}
+         data-save-url="{{ url_for('index.profile_stories_fragment_update', fid=f.id) }}">
+         {% endif %}
+
+        <div class="content-container content-container-{{ f.id }}" data-fragment-type="{% if f.type == fragment.TYPE_DOCUMENT or  f.type == fragment.TYPE_AUDIO or  f.type == fragment.TYPE_VIDEO %}p{% else %}{{ f.type }}{% endif %}">
+            {% if f.type == fragment.TYPE_IMAGE %}
+                <p class="doc-name"><strong>Caption: </strong><span class="emoji-container">{{ f.text }}</span></p>
+                <img src="{{ f.url }}" class="media-content">
+            {% elif f.type == fragment.TYPE_AUDIO %}
+                <p class="doc-name"><strong>Caption: </strong><span class="emoji-container">{{ f.text }}</span></p>
+				<audio controls>
+					<source src="{{ f.url }}" type="audio/mpeg" class="media-content">
+					<p>Your browser does not support audio tag</p>
+				  </audio>
+            {% elif f.type == fragment.TYPE_VIDEO %}
+				<span class="original-text-container">{{ f.text }}</span>
+                <p class="doc-name"><strong>Caption: </strong><span class="emoji-container">{{ f.text }}</span></p>
+				<video controls>
+					<source src="{{ f.url }}" type="video/mp4" class="media-content">
+					<p>Your browser does not support H.264/MP4.</p>
+				</video>
+            {% elif f.type == fragment.TYPE_DOCUMENT %}
+                <p class="doc-name"><strong>Caption: </strong><span class="emoji-container">{{ f.text }}</span></p>
+				<a href="{{ f.url }}" class="media-content">{{ f.url.split('/')[-1] }}</a>
+            {% elif f.type == fragment.TYPE_POLL %}
+                <span class="emoji-container">{{ f.text }}</span>
+
+                <span class="show-poll-questions">
+                    <ul>
+                    {% for question in f.get_poll_questions %}
+                        <li>{{ question }}</li>
+                    {% endfor %}
+                    </ul>
+                </span>
+
+            {% elif f.type == fragment.TYPE_QUESTION %}
+                <span class="emoji-container">{{ f.text }}</span>
+                <span class="original-text-container hidden">{{ f.text }}</span>
+                <span class="original-attribute-container hidden">{{ f.attribute.id }}</span>
+
+                <span class="show-attribute-options">
+                    <ul>
+                    {% for opt in f.attribute.options %}
+                        <li>{{ opt.text }}</li>
+                    {% endfor %}
+                    </ul>
+                </span>
+            {% else %}
+                <span class="emoji-container">{{ f.text }}</span>
+                <span class="original-text-container hidden">{{ f.text }}</span>
+            {% endif %}
+        </div>
+		
+
+        {% if f.type != fragment.TYPE_IMAGE %}
+            <div class="input-container input-container-{{ f.id }} hidden"></div>
+        {% endif %}
+    </div>
+</div>

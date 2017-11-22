@@ -1,0 +1,24 @@
+{% extends 'auth/base.html' %}
+
+{% block title %}Page not found{% endblock %}
+
+{% block content %}
+<script>
+    window.addEventListener("load", function () {
+        document.body.className += " not-found-bg";
+    }, false);
+</script>
+
+<div class="middle-box row text-center loginscreen animated fadeInDown">
+    <div>
+        <h2 class="font-bold">Ooops!</h2>
+        <p class="text-muted text-center">
+            We are sorry but the error has occured, please, go back or try again
+        </p>
+        <a class="btn btn-sm btn-success" href="{{go_back}}">
+            <i class="fa fa-arrow-left"></i> Back
+        </a>
+        <a class="btn btn-sm btn-success" href="/">Home</a>
+    </div>
+</div>
+{% endblock %}
