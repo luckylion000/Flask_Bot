@@ -34,7 +34,7 @@ six==1.10.0
 https://github.com/xorduna/telepot/archive/master.zip
 urllib3==1.18
 webassets==0.12.0
-Werkzeug==0.11.10
+Werkzeug==0.15.3
 WTForms==2.1
 pytest==3.0.4
 Flask-Session==0.3.1
